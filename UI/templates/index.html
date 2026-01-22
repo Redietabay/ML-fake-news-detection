@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fake News Detection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(120deg, #667eea, #764ba2);
+            min-height: 100vh;
+            padding: 40px 0;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,.15);
+        }
+
+        h1 {
+            font-weight: 700;
+            color: #333;
+        }
+
+        .info-box {
+            background: #f1f5ff;
+            border-left: 5px solid #4f46e5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .result-box {
+            padding: 20px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        .progress {
+            height: 22px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="col-lg-8 mx-auto">
+
+        <div class="main-card">
+
+            <h1 class="text-center mb-4">Fake News Detection System</h1>
+
+            <div class="info-box">
+                <p>
+                    This system analyzes news articles using
+                    <strong>Naive Bayes</strong>, <strong>Logistic Regression</strong>,
+                    and <strong>LSTM</strong> models.
+                    The selected model provides the final prediction while
+                    confidence bars show cross-model comparison.
+                </p>
+            </div>
+
+            <form method="POST">
+                <label class="form-label">News Text</label>
+                <textarea class="form-control mb-3" rows="6"
+                          name="news_text"
+                          placeholder="Paste the news article here...">{{ news_text }}</textarea>
+
+                <label class="form-label">Select Model</label>
+                <select class="form-select mb-3" name="model_type">
+                    <option value="nb" {% if selected_model=='nb' %}selected{% endif %}>Naive Bayes</option>
+                    <option value="log" {% if selected_model=='log' %}selected{% endif %}>Logistic Regression</option>
+                    <option value="lstm" {% if selected_model=='lstm' %}selected{% endif %}>LSTM</option>
+                </select>
+
+                <button class="btn btn-primary w-100">
+                    Detect Fake News
+                </button>
+            </form>
+
+            {% if result %}
+            <hr class="my-4">
+
+            <div class="result-box"
+                 style="background-color:{% if result=='REAL NEWS' %}#22c55e{% else %}#ef4444{% endif %};">
+                <p>Prediction: {{ result }}</p>
+                <p>Confidence: {{ prob }}%</p>
+            </div>
+
+            <div class="mt-4">
+                <h6>Model Confidence Comparison</h6>
+
+                <label>Naive Bayes</label>
+                <div class="progress mb-2">
+                    <div class="progress-bar bg-success" style="width:{{ nb_prob }}%">
+                        {{ nb_prob }}%
+                    </div>
+                </div>
+
+                <label>Logistic Regression</label>
+                <div class="progress mb-2">
+                    <div class="progress-bar bg-info" style="width:{{ log_prob }}%">
+                        {{ log_prob }}%
+                    </div>
+                </div>
+
+                <label>LSTM</label>
+                <div class="progress">
+                    <div class="progress-bar bg-warning" style="width:{{ lstm_prob }}%">
+                        {{ lstm_prob }}%
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
